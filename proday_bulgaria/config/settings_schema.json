@@ -34,6 +34,17 @@
     ]
   },
   {
+    "name": "Best Offer",
+    "settings": [
+      {
+        "type": "color",
+        "id": "best_offer_color",
+        "label": "Best Offer card color",
+        "default": "#ffea83"
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.colors.name",
     "settings": [
       {
@@ -1449,6 +1460,17 @@
         "id": "cart_color_scheme",
         "label": "t:sections.all.colors.label",
         "default": "scheme-1"
+      }
+    ]
+  },
+  {
+    "name": "boris's setings",
+    "settings": [
+      {
+        "type": "color",
+        "id": "compare_at_price_color",
+        "label": "compare at price color"
+        
       }
     ]
   }

@@ -180,7 +180,8 @@
                       skip_styles: skip_card_product_styles,
                       quick_add: section.settings.quick_add,
                       section_id: section.id,
-                      product_view_context: 'collection'
+                      product_view_context: 'collection',
+                      best_offer_bg: section.settings.best_offer_custom_color
                     %}
                   </li>
                   {%- assign skip_card_product_styles = true -%}
@@ -209,10 +210,10 @@
     {
       "type": "range",
       "id": "products_per_page",
-      "min": 8,
+      "min": 2,
       "max": 36,
-      "step": 4,
-      "default": 16,
+      "step": 1,
+      "default": 2,
       "label": "t:sections.main-collection-product-grid.settings.products_per_page.label"
     },
     {
@@ -246,6 +247,12 @@
       "label": "t:sections.all.colors.label",
       "info": "t:sections.all.colors.has_cards_info",
       "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "best_offer_custom_color",
+      "label": "Best Offer Color",
+      "default": "#ffea83"
     },
     {
       "type": "header",

@@ -28,6 +28,67 @@
   {{ 'quick-order-list.css' | asset_url | stylesheet_tag }}
   {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
 {%- endunless -%}
+
+<style>
+  .card-wrapper--best-offer {
+    background-color: {{ best_offer_bg | default: settings.best_offer_color | default: '#ffea83' }};
+    border: 2px solid #f59f00;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(245, 159, 0, 0.2);
+  }
+
+  .product-card-tags {
+    margin: 6px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .product-tag-badge {
+    font-size: 1.1rem;
+    padding: 2px 6px;
+    background: #f1f1f1;
+    color: #333;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .tags-details {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .button-show-more-tags {
+    list-style: none;
+    display: inline-block;
+    background: transparent;
+    border: 1px dashed #888;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #555;
+    user-select: none;
+  }
+
+  .button-show-more-tags::-webkit-details-marker {
+    display: none;
+  }
+
+  .button-show-more-tags:hover {
+    background: #e5e5e5;
+  }
+
+  .tags-details[open] .button-show-more-tags {
+    display: none;
+  }
+</style>
+
 {%- if card_product and card_product != empty -%}
   {%- liquid
     assign ratio = 1
@@ -42,7 +103,7 @@
   -%}
 
   <product-component view-event-payload="{{ card_product | standard_event_data: 'view', context: product_view_context | escape }}">
-    <div class="card-wrapper product-card-wrapper underline-links-hover">
+    <div class="card-wrapper product-card-wrapper underline-links-hover{% if card_product.tags contains 'best offer' %} card-wrapper--best-offer{% endif %}">
       <div
         class="
           card card--{{ settings.card_style }}
@@ -162,6 +223,20 @@
                 {{ card_product.title | escape }}
               </a>
             </h3>
+            {%- comment -%} komentar  {%- endcomment -%}
+            {%- if card_product.metafields.custom.prodDate != blank -%}
+              {%- assign current_date = 'now' | date: '%s' | plus: 0 -%}
+              {%- assign prod_date = card_product.metafields.custom.prodDate.value | date: '%s' | plus: 0 -%}
+
+              {%- assign difference = current_date | minus: prod_date -%}
+              {%- assign one_month_in_seconds = 2592000 -%}
+
+              {%- if difference > one_month_in_seconds -%}
+                <div class="product-date" style="color: red; font-weight: bold; font-size: 11px;">
+                  Дата на търг: {{ card_product.metafields.custom.prodDate.value | date: '%d.%m.%Y' }}
+                </div>
+              {%- endif -%}
+            {%- endif -%}
             <div class="card-information">
               {%- if show_vendor -%}
                 <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
@@ -205,6 +280,46 @@
                   </span>
                 </p>
               {%- endif -%}
+
+              {%- if card_product.tags.size > 0 -%}
+                <div class="product-card-tags">
+                  {%- for tag in card_product.tags limit: 3 -%}
+                    <span class="product-tag-badge">#{{ tag }}_{{ forloop.index }}</span>
+                  {%- endfor -%}
+
+                  {%- if card_product.tags.size > 3 -%}
+                    <details class="tags-details">
+                      <summary class="button-show-more-tags">show more</summary>
+                      {%- for tag in card_product.tags offset: 3 -%}
+                        {%- assign current_index = forloop.index | plus: 3 -%}
+                        <span class="product-tag-badge">#{{ tag }}_{{ current_index }}</span>
+                      {%- endfor -%}
+                    </details>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+              {%- comment -%}
+                1 2 3 4 5 6
+              {%- endcomment -%}
+
+              {%- if card_product.tags.size > 0 -%}
+                <div class="product-card-tags">
+                  {% for tag in card_product.tags %}
+                    {% if forloop.index <= 3 %}
+                      <span class="product-tag-badge">
+                        {{ tag }}
+                        {{ forloop.index }}
+                      </span>
+                    {% else %}
+                      <span class="product-tag-badge hidden">
+                        {{ tag }}
+                        {{ forloop.index -}}
+                      </span>
+                    {% endif %}
+                  {%- endfor -%}
+                </div>
+              {% endif %}
 
               {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
               {%- if card_product.quantity_price_breaks_configured? -%}
