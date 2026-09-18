@@ -1,0 +1,11 @@
+.metafield-display-section {
+    margin: 20px auto;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.metafield-display-empty {
+    color: #888;
+    font-style: italic;
+}

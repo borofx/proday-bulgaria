@@ -1,6 +1,7 @@
+{{ 'metafield-display.css' | asset_url | stylesheet_tag }}
+
 <div
   class="metafield-display-section page-width"
-  style="margin: 20px auto; padding: 15px; border: 1px solid #ddd; border-radius: 6px;"
 >
   {% assign key = section.settings.metafield_key %}
   {% assign mf_value = product.metafields.custom[key].value %}
@@ -15,9 +16,14 @@
       {% endif %}
     </p>
   {% else %}
-    <p style="color: #888; font-style: italic;">Няма намерена стойност за поле "{{ key }}" за този продукт.</p>
+    <p class="metafield-display-empty">Няма намерена стойност за поле "{{ key }}" за този продукт.</p>
   {% endif %}
-  {{ section.settings.dynamic_date | date: '%d.%m.%Y' | default: 'hey'}}
+  {{ section.settings.dynamic_date | date: '%d.%m.%Y' | default: 'hey' }}
+  {% for block in section.blocks %}
+    {% if block.type == 'title_block' %}
+      <h3>{{ block.settings.heading }}</h3>
+    {% endif %}
+  {% endfor %}
 </div>
 
 {% schema %}
@@ -26,6 +32,20 @@
   "enabled_on": {
     "templates": ["product", "collection"]
   },
+  "blocks": [
+    {
+      "type": "text",
+      "name": "title_block",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Заглавие",
+          "default": "Информация за продукта"
+        }
+      ]
+    }
+  ],
   "settings": [
     {
       "type": "text",
